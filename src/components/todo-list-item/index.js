@@ -1,26 +1,60 @@
-import React from 'react';
+import React, {Component} from 'react';
 import './todo-list-item.css';
 
-const TodoListItem = ({label, important = false}) => {
-    const style = {
-        color: important ? 'red' : 'black'
+class TodoListItem extends Component{
+
+    state = {
+        done: false,
+        important: false
     };
+
+    onLabelClick = () => {
+        this.setState((state) => {
+            return {
+                done: !state.done
+            }
+        })
+    };
+
+    onMarkImportant = () => {
+        this.setState( (state) => {
+            return {
+                important: !state.important
+            }
+        })
+    }
+
+    render(){
+
+        const {label, onDeleted} = this.props;
+        const {done, important} = this.state;
+
+        let className = !done ? 'todo-list-item' : 'todo-list-item done';
+        className = important ? className += ' important' : className;
+
         return (
-            <span className="todo-list-item">
-                 <span style={style}
-                       className = "todo-list-item-label">
-                {label}
+            <span className={className}>
+                 <span
+                     className = "todo-list-item-label"
+                    onClick={this.onLabelClick}>
+                    {label}
                 </span>
                 <div className="btn-wrapper">
-                    <button className = "btn btn-outline-success btn-sm">
+                    <button
+                        className = "btn btn-outline-success btn-sm"
+                        onClick={this.onMarkImportant}>
                         <i className="fa fa-exclamation"></i>
                     </button>
-                    <button className = "btn btn-outline-danger btn-sm">
+                    <button
+                        className = "btn btn-outline-danger btn-sm"
+                        onClick={onDeleted}>
                         <i className="fa fa-trash-o"></i>
                     </button>
                 </div>
             </span>
 
-    )
-};
+        )
+    }
+}
+
 export default TodoListItem;
