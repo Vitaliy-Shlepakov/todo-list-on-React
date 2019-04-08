@@ -15,8 +15,9 @@ class App extends Component{
     state = {
         todoData : [
             this.createTodoItem('Drink coffee'),
-            this.createTodoItem('Drink tea'),
-            this.createTodoItem('Drink compote')
+            this.createTodoItem('Go to work'),
+            this.createTodoItem('Play with children'),
+            this.createTodoItem('Draw pictures')
         ]
     }
 
@@ -25,7 +26,8 @@ class App extends Component{
             label,
             important: false,
             done: false,
-            id: this.maxId++
+            id: this.maxId++,
+            term: ''
         }
     }
 
@@ -80,20 +82,43 @@ class App extends Component{
         })
     };
 
+    searchItem = (items, letter) => {
+        if(letter === 0) {
+            return items;
+        }
+         let newArr = items.filter((el) => {
+            return el.label.toLowerCase().indexOf(letter) > -1;
+
+        })
+        return newArr
+
+    };
+
+    setTerm = (sas) => {
+        this.setState((state) => {
+            const {term} = state;
+            return {
+                term: sas
+            }
+        })
+    }
+
     render() {
-        const {todoData} = this.state;
+        const {todoData, term} = this.state;
         const doneCount = todoData.filter((el) => el.done).length;
         const todoCount = todoData.length - doneCount;
+        const visible = this.searchItem(todoData, term || '');
+
         return(
             <div className="todo-app">
                 <AppHeader done={doneCount} toDo={todoCount}/>
                 <div className="top-panel d-flex mb-3">
-                    <SearchPanel/>
+                    <SearchPanel searchItem={this.setTerm}/>
                     <ItemStatusFilter/>
                 </div>
 
                 <TodoList
-                    todos = {todoData}
+                    todos = {visible}
                     onDeleted_1 = {this.deleteItem}
                     onToggleImportant = {this.onToggleImportant}
                     onToggleDone = {this.onToggleDone}
